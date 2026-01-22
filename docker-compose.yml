@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: amplify_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: amplify_dev
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
