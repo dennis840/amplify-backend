@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Backend API para AMPLIFY - Plataforma de conexión de músicos",
   "main": "src/index.js",
-  "scripts": {
+   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "keywords": ["api", "music", "musicians", "bands"],
   "author": "Dennis Santiago Villacís Vásquez",
