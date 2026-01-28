@@ -1,24 +1,192 @@
-body {
+/* =====================
+   RESET BÁSICO
+===================== */
+* {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
-.header {
-  padding: 16px;
-  text-align: center;
-  background: black;
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0f1025 0%, #05060f 60%);
+  color: #ffffff;
 }
 
-.container {
-  padding: 24px;
-  text-align: center;
-}
-
-button {
-  margin-top: 20px;
-  padding: 12px 24px;
-  font-size: 16px;
+/* =====================
+   BOTONES
+===================== */
+.primary-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  color: #fff;
+  background: linear-gradient(90deg, #8a3ffc, #4f6ef7);
+  box-shadow: 0 0 25px rgba(138, 63, 252, 0.4);
+}
+
+.primary-button:hover {
+  opacity: 0.95;
+}
+
+/* =====================
+   WELCOME (NO TOCAR)
+===================== */
+.welcome-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-content {
+  text-align: center;
+}
+
+.logo-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8a3ffc, #4f6ef7);
+}
+
+.logo-icon {
+  font-size: 32px;
+}
+
+.welcome-title {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+  font-size: 1rem;
+  color: #9aa0ff;
+  margin-bottom: 32px;
+}
+
+/* =====================
+   LOGIN / REGISTER
+===================== */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+}
+
+.auth-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8a3ffc, #4f6ef7);
+}
+
+.auth-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #9aa0ff;
+  margin-bottom: 32px;
+}
+
+/* =====================
+   INPUTS
+===================== */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.02)
+  );
+  color: #fff;
+}
+
+.input-wrapper input::placeholder {
+  color: #7b80c0;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  opacity: 0.6;
+}
+
+/* =====================
+   CHECKBOX
+===================== */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  margin: 20px 0;
+}
+
+.checkbox-group input {
+  width: 16px;
+  height: 16px;
+}
+
+/* =====================
+   LINKS
+===================== */
+.auth-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.auth-footer a {
+  color: #8a3ffc;
+  text-decoration: none;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
 }

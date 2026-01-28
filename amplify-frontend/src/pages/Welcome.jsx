@@ -12,11 +12,11 @@ export default function Welcome() {
         </div>
 
         <h1 className="welcome-title">AMPLIFY</h1>
-        <p className="welcome-subtitle">Conecta. Crea. Sueña.</p>
+        <p className="welcome-subtitle">Conecta. Crea. Suena.</p>
 
         <button
           className="primary-button"
-          onClick={() => navigate("/artist/home")}
+          onClick={() => navigate("/auth")}
         >
           Comenzar
         </button>

@@ -1,23 +1,16 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import ArtistLayout from "../layouts/ArtistLayout";
-import ArtistHome from "../pages/ArtistHome";
-import Dashboard from "../pages/Dashboard";
-import Login from "../pages/Login";
+import { Routes, Route } from "react-router-dom";
 import Welcome from "../pages/Welcome";
+import Login from "../pages/Login";
+import AuthLayout from "../layouts/AuthLayout";
 
 export default function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Welcome />} />
-      <Route path="/login" element={<Login />} />
 
-      <Route path="/artist" element={<ArtistLayout />}>
-        <Route path="home" element={<ArtistHome />} />
-        <Route path="dashboard" element={<Dashboard />} />
+      <Route element={<AuthLayout />}>
+        <Route path="/auth" element={<Login />} />
       </Route>
-
-      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
-

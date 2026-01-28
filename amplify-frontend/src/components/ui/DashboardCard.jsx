@@ -1,10 +1,7 @@
-function DashboardCard({ title, value }) {
+export default function Dashboard() {
   return (
-    <div className="dashboard-card">
-      <h3>{title}</h3>
-      <p>{value}</p>
+    <div>
+      <h1>Dashboard</h1>
     </div>
-  )
+  );
 }
-
-export default DashboardCard
