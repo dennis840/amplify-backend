@@ -1,0 +1,9 @@
+.signin-wrapper {
+  width: 100%;
+}
+
+.signin-card {
+  background-color: #0e1323;
+  border-radius: 20px;
+  padding: 32px;
+}
