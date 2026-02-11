@@ -1,6 +1,11 @@
+import { Link } from "react-router-dom";
+
 const Login = () => {
   return (
-    <div className="auth-container">
+    <div
+      className="auth-container"
+      style={{ pointerEvents: "auto", zIndex: 10 }}
+    >
       <div className="auth-card">
 
         {/* LOGO */}
@@ -16,15 +21,11 @@ const Login = () => {
 
         {/* FORMULARIO */}
         <form>
-
           <div className="form-group">
             <label className="form-label">Nombre artístico</label>
             <div className="input-wrapper">
               <span className="input-icon">🎤</span>
-              <input
-                type="text"
-                placeholder="Tu nombre artístico"
-              />
+              <input type="text" placeholder="Tu nombre artístico" />
             </div>
           </div>
 
@@ -32,10 +33,7 @@ const Login = () => {
             <label className="form-label">Correo electrónico</label>
             <div className="input-wrapper">
               <span className="input-icon">📧</span>
-              <input
-                type="email"
-                placeholder="correo@ejemplo.com"
-              />
+              <input type="email" placeholder="correo@ejemplo.com" />
             </div>
           </div>
 
@@ -43,22 +41,15 @@ const Login = () => {
             <label className="form-label">Contraseña</label>
             <div className="input-wrapper">
               <span className="input-icon">🔒</span>
-              <input
-                type="password"
-                placeholder="••••••••"
-              />
+              <input type="password" placeholder="••••••••" />
             </div>
           </div>
 
-          {/* NUEVO CAMPO */}
           <div className="form-group">
             <label className="form-label">Confirmar contraseña</label>
             <div className="input-wrapper">
               <span className="input-icon">🔒</span>
-              <input
-                type="password"
-                placeholder="••••••••"
-              />
+              <input type="password" placeholder="••••••••" />
             </div>
           </div>
 
@@ -69,7 +60,18 @@ const Login = () => {
 
         {/* FOOTER */}
         <div className="auth-footer">
-          ¿Ya tienes una cuenta? <a href="#">Inicia sesión</a>
+          ¿Ya tienes una cuenta?{" "}
+          <Link
+            to="/signin"
+            style={{
+              color: "#8a3ffc",
+              cursor: "pointer",
+              textDecoration: "none",
+              fontWeight: "600"
+            }}
+          >
+            Inicia sesión
+          </Link>
         </div>
 
       </div>
