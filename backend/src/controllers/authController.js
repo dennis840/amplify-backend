@@ -8,7 +8,6 @@ const authController = {
     try {
       const { name, email, password, terms } = req.body;
 
-      // Validar campos obligatorios
       if (!name || !email || !password) {
         return res.status(400).json({
           success: false,
@@ -16,7 +15,6 @@ const authController = {
         });
       }
 
-      // Validar que aceptó términos
       if (!terms) {
         return res.status(400).json({
           success: false,
@@ -24,7 +22,6 @@ const authController = {
         });
       }
 
-      // Verificar si el email ya existe
       const existingUser = await userModel.findByEmail(email);
       if (existingUser) {
         return res.status(400).json({
@@ -33,16 +30,10 @@ const authController = {
         });
       }
 
-      // Hash de la contraseña
       const passwordHash = await bcrypt.hash(password, 10);
-
-      // Crear usuario
       const newUser = await userModel.create(name, email, passwordHash);
-
-      // Generar token JWT
       const token = jwtUtils.generateToken(newUser.id, newUser.email);
 
-      // Respuesta exitosa
       res.status(201).json({
         success: true,
         message: 'Usuario registrado exitosamente',
@@ -59,6 +50,58 @@ const authController = {
       res.status(500).json({
         success: false,
         error: 'Error al registrar usuario'
+      });
+    }
+  },
+
+  // Inicio de sesión
+  async signin(req, res) {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email y contraseña son obligatorios'
+        });
+      }
+
+      const user = await userModel.findByEmail(email);
+      
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          error: 'Email no registrado'
+        });
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password_hash);
+      
+      if (!passwordMatch) {
+        return res.status(401).json({
+          success: false,
+          error: 'Contraseña incorrecta'
+        });
+      }
+
+      const token = jwtUtils.generateToken(user.id, user.email);
+
+      res.json({
+        success: true,
+        message: 'Inicio de sesión exitoso',
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        },
+        token
+      });
+
+    } catch (error) {
+      console.error('Error en signin:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al iniciar sesión'
       });
     }
   }
