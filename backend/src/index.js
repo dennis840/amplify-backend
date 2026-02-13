@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const db = require('./db');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Rutas
+app.use('/api/auth', authRoutes);
+
 // Ruta de prueba
 app.get('/health', (req, res) => {
   res.json({ 
@@ -17,24 +20,6 @@ app.get('/health', (req, res) => {
     message: 'AMPLIFY API running',
     timestamp: new Date().toISOString()
   });
-});
-
-// Ruta para probar conexión a base de datos
-app.get('/db-test', async (req, res) => {
-  try {
-    const result = await db.query('SELECT NOW()');
-    res.json({ 
-      success: true,
-      message: 'Database connected successfully',
-      timestamp: result.rows[0].now
-    });
-  } catch (error) {
-    res.status(500).json({ 
-      success: false,
-      message: 'Database connection failed',
-      error: error.message
-    });
-  }
 });
 
 // Ruta principal
