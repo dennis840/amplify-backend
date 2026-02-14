@@ -104,6 +104,27 @@ const authController = {
         error: 'Error al iniciar sesión'
       });
     }
+  },
+
+  // Obtener usuario actual
+  async getMe(req, res) {
+    try {
+      // El usuario ya viene en req.user gracias al middleware
+      res.json({
+        success: true,
+        user: {
+          id: req.user.id,
+          name: req.user.name,
+          email: req.user.email
+        }
+      });
+    } catch (error) {
+      console.error('Error en getMe:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener usuario'
+      });
+    }
   }
 };
 
