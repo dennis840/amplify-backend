@@ -1,37 +1,37 @@
 # AMPLIFY Backend API
 
-Backend RESTful para AMPLIFY - Plataforma de conexión de músicos en Ecuador.
+Backend RESTful para AMPLIFY - Plataforma de conexion de musicos en Ecuador.
 
-## 📋 Descripción
+## Descripcion
 
-API Node.js + Express que gestiona autenticación, perfiles musicales y conexiones entre músicos. Diseñado para integrarse con frontend React Native/React.
+API Node.js + Express que gestiona autenticacion, perfiles musicales y conexiones entre musicos. Disenado para integrarse con frontend React Native/React.
 
 ---
 
-## 🚀 Características
+## Caracteristicas
 
-- Sistema de autenticación completo (JWT)
+- Sistema de autenticacion completo (JWT)
 - Registro y login de usuarios
-- Protección de rutas con middleware
+- Proteccion de rutas con middleware
 - Base de datos PostgreSQL
-- Hash de contraseñas con bcrypt
+- Hash de contrasenas con bcrypt
 - Validaciones y manejo de errores
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnologico
 
 - **Runtime:** Node.js v18+
 - **Framework:** Express.js
 - **Base de datos:** PostgreSQL 15
-- **Autenticación:** JWT (jsonwebtoken)
+- **Autenticacion:** JWT (jsonwebtoken)
 - **Seguridad:** bcrypt para hash de passwords
 - **ORM:** SQL nativo con pg
 - **Docker:** PostgreSQL en contenedor
 
 ---
 
-## 📦 Instalación
+## Instalacion
 
 ### Requisitos previos
 
@@ -39,7 +39,7 @@ API Node.js + Express que gestiona autenticación, perfiles musicales y conexion
 - Docker Desktop
 - Git
 
-### Pasos de instalación
+### Pasos de instalacion
 ```bash
 # 1. Clonar repositorio
 git clone https://github.com/dennis840/amplify-backend.git
@@ -51,7 +51,6 @@ npm install
 
 # 3. Configurar variables de entorno
 cp .env.example .env
-# Editar .env con tus credenciales
 
 # 4. Levantar base de datos PostgreSQL
 cd ..
@@ -62,11 +61,11 @@ cd backend
 npm run dev
 ```
 
-El servidor estará disponible en: `http://localhost:3000`
+El servidor estara disponible en: `http://localhost:3000`
 
 ---
 
-## ⚙️ Variables de Entorno
+## Variables de Entorno
 
 Crear archivo `.env` en la carpeta `backend/`:
 ```env
@@ -86,11 +85,11 @@ JWT_SECRET=tu_secreto_muy_seguro_aqui
 JWT_EXPIRES_IN=7d
 ```
 
-⚠️ **Importante:** Cambiar `JWT_SECRET` en producción por un valor aleatorio seguro.
+**Importante:** Cambiar `JWT_SECRET` en produccion por un valor aleatorio seguro.
 
 ---
 
-## 📚 API Endpoints
+## API Endpoints
 
 ### Base URL
 ```
@@ -99,7 +98,7 @@ http://localhost:3000
 
 ---
 
-### 🔓 Endpoints Públicos (Sin autenticación)
+### Endpoints Publicos (Sin autenticacion)
 
 #### 1. Health Check
 
@@ -130,7 +129,7 @@ Content-Type: application/json
 **Body:**
 ```json
 {
-  "name": "Juan Pérez",
+  "name": "Juan Perez",
   "email": "juan@ejemplo.com",
   "password": "Password123!",
   "terms": true
@@ -139,8 +138,8 @@ Content-Type: application/json
 
 **Validaciones:**
 - `name`: requerido, string
-- `email`: requerido, formato email válido
-- `password`: requerido, mínimo 8 caracteres
+- `email`: requerido, formato email valido
+- `password`: requerido, minimo 8 caracteres
 - `terms`: requerido, debe ser `true`
 
 **Respuesta exitosa (201):**
@@ -150,7 +149,7 @@ Content-Type: application/json
   "message": "Usuario registrado exitosamente",
   "user": {
     "id": 1,
-    "name": "Juan Pérez",
+    "name": "Juan Perez",
     "email": "juan@ejemplo.com"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -159,22 +158,15 @@ Content-Type: application/json
 
 **Errores posibles:**
 ```json
-// Email ya registrado (400)
 {
   "success": false,
-  "error": "El email ya está registrado"
-}
-
-// Campos faltantes (400)
-{
-  "success": false,
-  "error": "Todos los campos son obligatorios"
+  "error": "El email ya esta registrado"
 }
 ```
 
 ---
 
-#### 3. Inicio de Sesión (SignIn)
+#### 3. Inicio de Sesion (SignIn)
 
 **Request:**
 ```http
@@ -194,10 +186,10 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Inicio de sesión exitoso",
+  "message": "Inicio de sesion exitoso",
   "user": {
     "id": 1,
-    "name": "Juan Pérez",
+    "name": "Juan Perez",
     "email": "juan@ejemplo.com"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -206,22 +198,21 @@ Content-Type: application/json
 
 **Errores posibles:**
 ```json
-// Email no registrado (401)
 {
   "success": false,
   "error": "Email no registrado"
 }
-
-// Contraseña incorrecta (401)
+```
+```json
 {
   "success": false,
-  "error": "Contraseña incorrecta"
+  "error": "Contrasena incorrecta"
 }
 ```
 
 ---
 
-### 🔐 Endpoints Protegidos (Requieren autenticación)
+### Endpoints Protegidos (Requieren autenticacion)
 
 **Header requerido:**
 ```http
@@ -242,7 +233,7 @@ Authorization: Bearer {TOKEN}
   "success": true,
   "user": {
     "id": 1,
-    "name": "Juan Pérez",
+    "name": "Juan Perez",
     "email": "juan@ejemplo.com"
   }
 }
@@ -250,53 +241,37 @@ Authorization: Bearer {TOKEN}
 
 **Errores posibles:**
 ```json
-// Token no proporcionado (401)
 {
   "success": false,
   "error": "Token no proporcionado"
-}
-
-// Token inválido o expirado (401)
-{
-  "success": false,
-  "error": "Token inválido o expirado"
 }
 ```
 
 ---
 
-## 🧪 Pruebas con PowerShell
+## Pruebas con PowerShell
 
 ### Registro de usuario
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:3000/api/auth/register" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"name":"María González","email":"maria@test.com","password":"SecurePass456!","terms":true}'
+Invoke-RestMethod -Uri "http://localhost:3000/api/auth/register" -Method POST -ContentType "application/json" -Body '{"name":"Maria Gonzalez","email":"maria@test.com","password":"SecurePass456!","terms":true}'
 ```
 
 ### Login
 ```powershell
-$response = Invoke-RestMethod -Uri "http://localhost:3000/api/auth/signin" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"email":"maria@test.com","password":"SecurePass456!"}'
-
+$response = Invoke-RestMethod -Uri "http://localhost:3000/api/auth/signin" -Method POST -ContentType "application/json" -Body '{"email":"maria@test.com","password":"SecurePass456!"}'
 $token = $response.token
 ```
 
 ### Obtener usuario actual
 ```powershell
-Invoke-RestMethod -Uri "http://localhost:3000/api/auth/me" `
-  -Method GET `
-  -Headers @{ Authorization = "Bearer $token" }
+Invoke-RestMethod -Uri "http://localhost:3000/api/auth/me" -Method GET -Headers @{ Authorization = "Bearer $token" }
 ```
 
 ---
 
-## 🗄️ Base de Datos
+## Base de Datos
 
-### Esquema de tabla `users`
+### Esquema de tabla users
 ```sql
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -314,7 +289,7 @@ docker exec -it amplify_db psql -U postgres -d amplify_dev
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 ```
 backend/
 ├── src/
@@ -339,16 +314,16 @@ backend/
 
 ---
 
-## 🔒 Seguridad
+## Seguridad
 
 ### Implementado:
 - Passwords hasheados con bcrypt
-- Tokens JWT con expiración
-- Validación de datos
+- Tokens JWT con expiracion
+- Validacion de datos
 - CORS habilitado
 - Variables en .env
 
-### Para producción:
+### Para produccion:
 - HTTPS obligatorio
 - Rate limiting
 - Helmet.js
@@ -356,32 +331,34 @@ backend/
 
 ---
 
-## 🚢 Scripts
+## Scripts
 ```bash
 npm run dev      # Desarrollo con nodemon
-npm start        # Producción
+npm start        # Produccion
 npm test         # Tests
 ```
 
 ---
 
-## 👥 Equipo
+## Equipo
 
-- **Backend Lead:** Hefesto (Dennis Santiago Villacís Vásquez)
+- **Backend Lead:** Hefesto (Dennis Santiago Villacis Vasquez)
 - **Frontend Lead:** Gepeto
+- **Proyecto:** BandasMatch - AMPLIFY
 
 ---
 
-## 📝 Changelog
+## Changelog
 
 ### v0.4.0-docs (2026-01-24)
-- Documentación completa
+- Documentacion completa de API
 
 ### v0.3.0-auth-complete (2026-01-24)
 - Sistema Auth completo con middleware
 
 ### v0.2.0-auth-signin (2026-01-24)
-- Endpoint signin
+- Endpoint signin implementado
 
 ### v0.1.0-auth-register (2026-01-24)
-- Endpoint register
+- Endpoint register implementado
+- Tabla users en PostgreSQL
