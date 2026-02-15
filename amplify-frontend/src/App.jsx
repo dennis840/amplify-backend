@@ -4,27 +4,27 @@ import Login from "./pages/Login";
 import Signin from "./pages/Signin";
 import Terms from "./pages/Terms";
 import CreateProfile from "./pages/CreateProfile";
+import Dashboard from "./pages/Dashboard";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
     <Routes>
-      {/* Welcome */}
       <Route path="/" element={<Welcome />} />
 
-      {/* Registro */}
       <Route path="/auth" element={<Login />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Inicio de sesión */}
       <Route path="/signin" element={<Signin />} />
       <Route path="/auth/signin" element={<Signin />} />
       <Route path="/auth/login" element={<Signin />} />
 
-      {/* Términos y condiciones */}
-      <Route path="/terms" element={<Terms />} />
+      {/* ESTA ES LA QUE FALTABA */}
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* Create Profile (después del registro) */}
+      <Route path="/terms" element={<Terms />} />
       <Route path="/create-profile" element={<CreateProfile />} />
+      <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
   );
 }

@@ -98,13 +98,17 @@ const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Error al registrar usuario");
+        if (response.status === 400 && data.error) {
+          throw new Error(
+            "Este email ya tiene una cuenta. Inicia sesión."
+          );
+        }
+
+        throw new Error(data.error || "Error al registrar usuario");
       }
 
-      // 🔐 Guardar token
       localStorage.setItem("token", data.token);
 
-      // 🚀 Redirigir a create-profile
       navigate("/create-profile");
 
     } catch (error) {

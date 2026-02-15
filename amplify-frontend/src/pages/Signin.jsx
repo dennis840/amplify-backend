@@ -1,20 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Signin = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    login({ name: "Dennis" }); // Simulación de login
+    navigate("/dashboard");
+  };
+
   return (
     <div className="auth-container">
       <div className="auth-card">
         
-        {/* Logo */}
         <div className="auth-logo">
           <span className="logo-icon">🎵</span>
         </div>
 
-        {/* Títulos */}
         <h1 className="auth-title">Bienvenido</h1>
         <p className="auth-subtitle">Inicia sesión para continuar</p>
 
-        {/* Email */}
         <div className="form-group">
           <label className="form-label">Email</label>
           <div className="input-wrapper">
@@ -26,7 +32,6 @@ const Signin = () => {
           </div>
         </div>
 
-        {/* Contraseña */}
         <div className="form-group">
           <label className="form-label">Contraseña</label>
           <div className="input-wrapper">
@@ -38,15 +43,29 @@ const Signin = () => {
           </div>
         </div>
 
-        {/* Olvidaste contraseña */}
-        <div className="auth-footer" style={{ textAlign: "right", marginBottom: "20px" }}>
-          <a href="#">¿Olvidaste tu contraseña?</a>
+        <div
+          className="auth-footer"
+          style={{ textAlign: "right", marginBottom: "20px" }}
+        >
+          <Link
+            to="/forgot-password"
+            style={{
+              color: "#8a3ffc",
+              textDecoration: "none",
+              fontWeight: "600"
+            }}
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
         </div>
 
-        {/* Botón */}
-        <button className="primary-button">Entrar</button>
+        <button
+          className="primary-button"
+          onClick={handleLogin}
+        >
+          Entrar
+        </button>
 
-        {/* Footer */}
         <div className="auth-footer">
           ¿No tienes cuenta? <Link to="/login">Regístrate</Link>
         </div>
