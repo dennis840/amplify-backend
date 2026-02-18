@@ -7,15 +7,19 @@ const ForgotPassword = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email) {
+    if (!email.trim()) {
       setError("Campo obligatorio");
       return;
     }
 
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!validateEmail(email)) {
       setError("Email inválido");
       return;
     }
@@ -23,11 +27,29 @@ const ForgotPassword = () => {
     setError("");
     setLoading(true);
 
-    // 🚀 Aquí irá la llamada al backend luego
-    setTimeout(() => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/auth/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      // Aunque falle, mostramos mensaje neutral por seguridad
+      await response.json().catch(() => null);
+
       setSubmitted(true);
+
+    } catch (err) {
+      // Incluso si hay error de red, no revelamos información
+      setSubmitted(true);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -57,6 +79,7 @@ const ForgotPassword = () => {
                   placeholder="correo@ejemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading}
                 />
               </div>
               {error && <p className="form-error">{error}</p>}
