@@ -67,7 +67,7 @@ const authController = {
       }
 
       const user = await userModel.findByEmail(email);
-      
+
       if (!user) {
         return res.status(401).json({
           success: false,
@@ -76,7 +76,7 @@ const authController = {
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password_hash);
-      
+
       if (!passwordMatch) {
         return res.status(401).json({
           success: false,
@@ -143,7 +143,7 @@ const authController = {
       if (user) {
         const crypto = require('crypto');
         const resetToken = crypto.randomBytes(32).toString('hex');
-        
+
         const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
         const passwordResetModel = require('../models/passwordResetModel');
@@ -165,6 +165,43 @@ const authController = {
       res.status(500).json({
         success: false,
         error: 'Error al procesar solicitud'
+      });
+    }
+  },
+
+  // ✅ NUEVO: Verificar si el token del link es válido
+  async verifyResetToken(req, res) {
+    try {
+      const { token } = req.query;
+
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          error: 'Token es requerido'
+        });
+      }
+
+      const passwordResetModel = require('../models/passwordResetModel');
+      const resetData = await passwordResetModel.findValidToken(token);
+
+      if (!resetData) {
+        return res.status(400).json({
+          success: false,
+          error: 'El enlace es inválido o ha expirado'
+        });
+      }
+
+      res.json({
+        success: true,
+        message: 'Token válido',
+        email: resetData.email
+      });
+
+    } catch (error) {
+      console.error('Error en verifyResetToken:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al verificar token'
       });
     }
   },
@@ -194,8 +231,8 @@ const authController = {
       const passwordHash = await bcrypt.hash(newPassword, 10);
 
       const updateQuery = `
-        UPDATE users 
-        SET password_hash = $1 
+        UPDATE users
+        SET password_hash = $1
         WHERE id = $2
       `;
       const db = require('../config/database');

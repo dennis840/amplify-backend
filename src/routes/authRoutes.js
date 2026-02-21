@@ -7,6 +7,11 @@ const authMiddleware = require('../middlewares/authMiddleware');
 router.post('/register', authController.register);
 router.post('/signin', authController.signin);
 router.post('/forgot-password', authController.forgotPassword);
+
+// ✅ NUEVO: Verificar si el token es válido (lo llama el frontend al cargar la página)
+router.get('/verify-reset-token', authController.verifyResetToken);
+
+// Restablecer contraseña con token
 router.post('/reset-password', authController.resetPassword);
 
 // Rutas protegidas (requieren token JWT)
