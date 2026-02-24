@@ -3,7 +3,6 @@ const userModel = require('../models/userModel');
 const jwtUtils = require('../utils/jwtUtils');
 
 const authController = {
-  // Registro de usuario
   async register(req, res) {
     try {
       const { name, email, password, terms } = req.body;
@@ -54,7 +53,6 @@ const authController = {
     }
   },
 
-  // Inicio de sesión
   async signin(req, res) {
     try {
       const { email, password } = req.body;
@@ -106,7 +104,6 @@ const authController = {
     }
   },
 
-  // Obtener usuario actual
   async getMe(req, res) {
     try {
       res.json({
@@ -126,7 +123,6 @@ const authController = {
     }
   },
 
-  // Solicitar reset de contraseña
   async forgotPassword(req, res) {
     try {
       const { email } = req.body;
@@ -140,24 +136,25 @@ const authController = {
 
       const user = await userModel.findByEmail(email);
 
-      if (user) {
-        const crypto = require('crypto');
-        const resetToken = crypto.randomBytes(32).toString('hex');
-
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-
-        const passwordResetModel = require('../models/passwordResetModel');
-        await passwordResetModel.createResetToken(user.id, resetToken, expiresAt);
-
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-
-        const { sendPasswordResetEmail } = require('../config/emailConfig');
-        await sendPasswordResetEmail(user.email, resetLink, user.name);
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: 'El correo no está registrado'
+        });
       }
+
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+      const passwordResetModel = require('../models/passwordResetModel');
+      await passwordResetModel.createResetToken(user.id, code, expiresAt);
+
+      const { sendPasswordResetEmail } = require('../config/emailConfig');
+      await sendPasswordResetEmail(user.email, code, user.name);
 
       res.json({
         success: true,
-        message: 'Si el correo está registrado, recibirás instrucciones para restablecer tu contraseña'
+        message: 'Código enviado a tu correo electrónico'
       });
 
     } catch (error) {
@@ -169,7 +166,6 @@ const authController = {
     }
   },
 
-  // ✅ NUEVO: Verificar si el token del link es válido
   async verifyResetToken(req, res) {
     try {
       const { token } = req.query;
@@ -177,7 +173,7 @@ const authController = {
       if (!token) {
         return res.status(400).json({
           success: false,
-          error: 'Token es requerido'
+          error: 'Código es requerido'
         });
       }
 
@@ -187,26 +183,24 @@ const authController = {
       if (!resetData) {
         return res.status(400).json({
           success: false,
-          error: 'El enlace es inválido o ha expirado'
+          error: 'El código es inválido o ha expirado'
         });
       }
 
       res.json({
         success: true,
-        message: 'Token válido',
-        email: resetData.email
+        message: 'Código válido'
       });
 
     } catch (error) {
       console.error('Error en verifyResetToken:', error);
       res.status(500).json({
         success: false,
-        error: 'Error al verificar token'
+        error: 'Error al verificar código'
       });
     }
   },
 
-  // Restablecer contraseña con token
   async resetPassword(req, res) {
     try {
       const { token, newPassword } = req.body;
@@ -214,7 +208,7 @@ const authController = {
       if (!token || !newPassword) {
         return res.status(400).json({
           success: false,
-          error: 'Token y nueva contraseña son requeridos'
+          error: 'Código y nueva contraseña son requeridos'
         });
       }
 
@@ -224,19 +218,17 @@ const authController = {
       if (!resetData) {
         return res.status(400).json({
           success: false,
-          error: 'Token inválido o expirado'
+          error: 'Código inválido o expirado'
         });
       }
 
       const passwordHash = await bcrypt.hash(newPassword, 10);
 
-      const updateQuery = `
-        UPDATE users
-        SET password_hash = $1
-        WHERE id = $2
-      `;
       const db = require('../config/database');
-      await db.query(updateQuery, [passwordHash, resetData.user_id]);
+      await db.query(
+  'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+  [passwordHash, resetData.user_id]
+);
 
       await passwordResetModel.markTokenAsUsed(token);
 
