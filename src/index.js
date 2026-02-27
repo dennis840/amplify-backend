@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+
 const authRoutes = require('./routes/authRoutes');
+const profileRoutes = require('./routes/profileRoutes'); // 👈 AGREGAR
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +14,7 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes); // 👈 AGREGAR
 
 // Ruta de prueba
 app.get('/health', (req, res) => {
@@ -22,7 +25,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Ruta principal
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Bienvenido a AMPLIFY API',
@@ -30,7 +32,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📍 http://localhost:${PORT}`);
