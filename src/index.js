@@ -3,7 +3,9 @@ const express = require('express');
 const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
-const profileRoutes = require('./routes/profileRoutes'); // 👈 AGREGAR
+const profileRoutes = require('./routes/profileRoutes');
+const musicianRoutes = require('./routes/musicianRoutes');
+const messageRoutes = require('./routes/messageRoutes'); // ✅ NUEVO
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,9 +16,10 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
-app.use('/api/profile', profileRoutes); // 👈 AGREGAR
+app.use('/api/profile', profileRoutes);
+app.use('/api/musicians', musicianRoutes);
+app.use('/api/messages', messageRoutes); // ✅ NUEVO
 
-// Ruta de prueba
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
