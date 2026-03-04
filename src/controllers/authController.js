@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const userModel = require('../models/userModel');
 const jwtUtils = require('../utils/jwtUtils');
+const db = require('../config/database');
 
 const authController = {
   async register(req, res) {
@@ -106,19 +107,147 @@ const authController = {
 
   async getMe(req, res) {
     try {
+      const userId = req.user.id;
+
+      const result = await db.query(
+        `
+        SELECT 
+          u.id,
+          u.name,
+          u.email,
+          u.created_at,
+          mp.artistic_name,
+          mp.profile_image
+        FROM users u
+        LEFT JOIN musician_profiles mp ON mp.user_id = u.id
+        WHERE u.id = $1
+        `,
+        [userId]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          error: 'Usuario no encontrado'
+        });
+      }
+
+      const user = result.rows[0];
+
       res.json({
         success: true,
         user: {
-          id: req.user.id,
-          name: req.user.name,
-          email: req.user.email
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          created_at: user.created_at
+        },
+        profile: {
+          artistic_name: user.artistic_name,
+          profile_image: user.profile_image
         }
       });
+
     } catch (error) {
       console.error('Error en getMe:', error);
       res.status(500).json({
         success: false,
         error: 'Error al obtener usuario'
+      });
+    }
+  },
+
+  // 🔥 CORREGIDO Y SEGURO
+ async changePassword(req, res) {
+  try {
+    console.log("=== CHANGE PASSWORD ===");
+    console.log("req.user:", req.user);
+    console.log("req.body:", req.body);
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuario no autenticado'
+      });
+    }
+
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'Ambas contraseñas son requeridas'
+      });
+    }
+
+    // Obtener password actual desde la BD
+    const result = await db.query(
+      'SELECT password_hash FROM users WHERE id = $1',
+      [userId]
+    );
+
+    console.log("DB result:", result.rows);
+
+    if (!result.rows || result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Comparar contraseña actual
+    const passwordMatch = await bcrypt.compare(
+      currentPassword,
+      user.password_hash
+    );
+
+    console.log("Password match:", passwordMatch);
+
+    if (!passwordMatch) {
+      return res.status(401).json({
+        success: false,
+        error: 'La contraseña actual es incorrecta'
+      });
+    }
+
+    // Hashear nueva contraseña
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+    await db.query(
+      'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+      [newPasswordHash, userId]
+    );
+
+    console.log("Password updated successfully");
+
+    return res.json({
+      success: true,
+      message: 'Contraseña actualizada correctamente'
+    });
+
+  } catch (error) {
+    console.error('🔥 ERROR REAL en changePassword:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Error interno al cambiar contraseña'
+    });
+  }
+},
+
+  async logout(req, res) {
+    try {
+      res.json({
+        success: true,
+        message: 'Sesión cerrada'
+      });
+    } catch (error) {
+      console.error('Error en logout:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al cerrar sesión'
       });
     }
   },
@@ -224,11 +353,10 @@ const authController = {
 
       const passwordHash = await bcrypt.hash(newPassword, 10);
 
-      const db = require('../config/database');
       await db.query(
-  'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
-  [passwordHash, resetData.user_id]
-);
+        'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+        [passwordHash, resetData.user_id]
+      );
 
       await passwordResetModel.markTokenAsUsed(token);
 

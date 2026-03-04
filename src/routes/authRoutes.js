@@ -3,18 +3,16 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-// Rutas públicas (sin autenticación)
+// Rutas públicas
 router.post('/register', authController.register);
 router.post('/signin', authController.signin);
 router.post('/forgot-password', authController.forgotPassword);
-
-// ✅ NUEVO: Verificar si el token es válido (lo llama el frontend al cargar la página)
 router.get('/verify-reset-token', authController.verifyResetToken);
-
-// Restablecer contraseña con token
 router.post('/reset-password', authController.resetPassword);
 
-// Rutas protegidas (requieren token JWT)
+// Rutas protegidas
 router.get('/me', authMiddleware.verifyToken, authController.getMe);
+router.post('/change-password', authMiddleware.verifyToken, authController.changePassword);
+router.post('/logout', authMiddleware.verifyToken, authController.logout);
 
 module.exports = router;

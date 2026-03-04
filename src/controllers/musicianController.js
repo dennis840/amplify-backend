@@ -147,8 +147,7 @@ exports.getMusicianById = async (req, res) => {
       `SELECT mp.*, u.name, u.email
        FROM musician_profiles mp
        JOIN users u ON u.id = mp.user_id
-       WHERE mp.user_id = $1
-         AND mp.profile_complete = TRUE`,
+       WHERE mp.user_id = $1`,
       [musicianId]
     );
 
