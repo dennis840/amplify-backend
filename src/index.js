@@ -30,7 +30,8 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/musicians', musicianRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/collaborations', collaborationRoutes);
-
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/api/notifications', notificationRoutes);
 /* =========================
    HEALTH CHECK
 ========================= */
@@ -110,7 +111,41 @@ io.on('connection', (socket) => {
       }
 
       // También enviar al emisor
-      socket.emit('receive_message', newMessage);
+      // También enviar al emisor
+socket.emit('receive_message', newMessage);
+
+// Crear notificación para el receptor
+await db.query(
+  `INSERT INTO notifications (user_id, type, message)
+   VALUES ($1, 'message', 'Tienes un nuevo mensaje')`,
+  [receiverId]
+);
+
+// Enviar push notification
+const tokenResult = await db.query(
+  `SELECT push_token FROM users WHERE id = $1`,
+  [receiverId]
+);
+const senderResult = await db.query(
+  `SELECT artistic_name FROM musician_profiles WHERE user_id = $1`,
+  [senderId]
+);
+const pushToken = tokenResult.rows[0]?.push_token;
+const senderName = senderResult.rows[0]?.artistic_name || "Alguien";
+
+if (pushToken) {
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      to: pushToken,
+      title: `🎵 ${senderName}`,
+      body: content,
+      sound: "default",
+      data: { userId: senderId }
+    })
+  });
+}
 
     } catch (error) {
       console.error('❌ Error enviando mensaje:', error);

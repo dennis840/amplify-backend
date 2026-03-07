@@ -19,7 +19,12 @@ exports.sendMessage = async (req, res) => {
       [senderId, receiverId, content]
     );
 
-    return res.status(201).json({ message: result.rows[0] });
+    await db.query(
+  `INSERT INTO notifications (user_id, type, message)
+   VALUES ($1, 'message', $2)`,
+  [receiverId, `Tienes un nuevo mensaje`]
+);
+return res.status(201).json({ message: result.rows[0] });
 
   } catch (error) {
     console.error(error);

@@ -9,6 +9,7 @@ router.post('/signin', authController.signin);
 router.post('/forgot-password', authController.forgotPassword);
 router.get('/verify-reset-token', authController.verifyResetToken);
 router.post('/reset-password', authController.resetPassword);
+router.post('/push-token', verifyToken, authController.savePushToken);
 
 // Rutas protegidas
 router.get('/me', authMiddleware.verifyToken, authController.getMe);
