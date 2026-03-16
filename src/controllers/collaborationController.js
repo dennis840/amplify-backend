@@ -147,3 +147,40 @@ exports.updateCollaboration = async (req, res) => {
     res.status(500).json({ message: "Error actualizando colaboración" });
   }
 };
+
+exports.deleteCollaboration = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user_id = req.user.id;
+
+    const owner = await db.query("SELECT * FROM collaborations WHERE id = $1", [id]);
+    if (owner.rows.length === 0)
+      return res.status(404).json({ message: "No encontrada" });
+    if (owner.rows[0].user_id !== user_id)
+      return res.status(403).json({ message: "No autorizado" });
+
+    await db.query("DELETE FROM collaborations WHERE id = $1", [id]);
+    res.json({ success: true, message: "Colaboración eliminada" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error eliminando colaboración" });
+  }
+};
+
+exports.getMyCollaborations = async (req, res) => {
+  try {
+    const user_id = req.user.id;
+    const result = await db.query(
+      `SELECT c.*, mp.artistic_name, mp.profile_image
+       FROM collaborations c
+       JOIN musician_profiles mp ON c.user_id = mp.user_id
+       WHERE c.user_id = $1
+       ORDER BY c.created_at DESC`,
+      [user_id]
+    );
+    res.json({ collaborations: result.rows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error obteniendo mis colaboraciones" });
+  }
+};
