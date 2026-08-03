@@ -10,6 +10,7 @@ const profileRoutes = require('./routes/profileRoutes');
 const musicianRoutes = require('./routes/musicianRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const collaborationRoutes = require('./routes/collaborationRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const db = require('./config/database');
 
@@ -17,9 +18,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* =========================
-   MIDDLEWARES
+   MIDDLEWARES (CORS CONFIG)
 ========================= */
-app.use(cors());
+
+// Configuración explícita de CORS para permitir conexiones desde la app móvil
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 /* =========================
@@ -30,8 +39,8 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/musicians', musicianRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/collaborations', collaborationRoutes);
-const notificationRoutes = require('./routes/notificationRoutes');
 app.use('/api/notifications', notificationRoutes);
+
 /* =========================
    HEALTH CHECK
 ========================= */
@@ -59,6 +68,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
+    methods: ["GET", "POST"]
   },
 });
 
@@ -111,41 +121,40 @@ io.on('connection', (socket) => {
       }
 
       // También enviar al emisor
-      // También enviar al emisor
-socket.emit('receive_message', newMessage);
+      socket.emit('receive_message', newMessage);
 
-// Crear notificación para el receptor
-await db.query(
-  `INSERT INTO notifications (user_id, type, message)
-   VALUES ($1, 'message', 'Tienes un nuevo mensaje')`,
-  [receiverId]
-);
+      // Crear notificación para el receptor
+      await db.query(
+        `INSERT INTO notifications (user_id, type, message)
+         VALUES ($1, 'message', 'Tienes un nuevo mensaje')`,
+        [receiverId]
+      );
 
-// Enviar push notification
-const tokenResult = await db.query(
-  `SELECT push_token FROM users WHERE id = $1`,
-  [receiverId]
-);
-const senderResult = await db.query(
-  `SELECT artistic_name FROM musician_profiles WHERE user_id = $1`,
-  [senderId]
-);
-const pushToken = tokenResult.rows[0]?.push_token;
-const senderName = senderResult.rows[0]?.artistic_name || "Alguien";
+      // Enviar push notification
+      const tokenResult = await db.query(
+        `SELECT push_token FROM users WHERE id = $1`,
+        [receiverId]
+      );
+      const senderResult = await db.query(
+        `SELECT artistic_name FROM musician_profiles WHERE user_id = $1`,
+        [senderId]
+      );
+      const pushToken = tokenResult.rows[0]?.push_token;
+      const senderName = senderResult.rows[0]?.artistic_name || "Alguien";
 
-if (pushToken) {
-  await fetch("https://exp.host/--/api/v2/push/send", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      to: pushToken,
-      title: `🎵 ${senderName}`,
-      body: content,
-      sound: "default",
-      data: { userId: senderId }
-    })
-  });
-}
+      if (pushToken) {
+        await fetch("https://exp.host/--/api/v2/push/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            to: pushToken,
+            title: `🎵 ${senderName}`,
+            body: content,
+            sound: "default",
+            data: { userId: senderId }
+          })
+        });
+      }
 
     } catch (error) {
       console.error('❌ Error enviando mensaje:', error);
@@ -162,7 +171,7 @@ if (pushToken) {
    START SERVER
 ========================= */
 
-server.listen(PORT, () => {
+// Escuchar en '0.0.0.0' es obligatorio para que Render exponga el puerto a internet
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 http://localhost:${PORT}`);
 });
