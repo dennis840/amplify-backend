@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMPLIFY | Conecta con la Escena Musical de Quito</title>
+  <style>
+    :root {
+      --bg-dark: #0F0F12;
+      --card-bg: #1A1A22;
+      --primary: #7C3AED;
+      --primary-neon: #A855F7;
+      --accent-cyan: #06B6D4;
+      --text-light: #F3F4F6;
+      --text-muted: #9CA3AF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-light); line-height: 1.6; overflow-x: hidden; }
+
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; background: rgba(15, 15, 18, 0.9); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); border-bottom: 1px solid #27272A; }
+    
+    /* Brand Isotype */
+    .brand-logo-container { display: flex; align-items: center; gap: 8px; }
+    .brand-isotype { width: 32px; height: 32px; object-fit: contain; }
+    
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); color: white; padding: 0.6rem 1.4rem; border-radius: 20px; text-decoration: none; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; display: inline-block; }
+    .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+
+    /* Hero Section */
+    .hero { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 4rem 5%; gap: 3rem; max-width: 1300px; margin: 0 auto; }
+    .hero-text { flex: 1; min-width: 300px; }
+    .hero-text h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 1rem; }
+    .hero-text h1 span { color: var(--primary-neon); }
+    .hero-text p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; }
+
+    /* Mobile Frame Mockup */
+    .phone-container { flex: 1; display: flex; justify-content: center; min-width: 320px; }
+    .phone-mockup { width: 320px; height: 640px; background: #000; border-radius: 40px; border: 10px solid #27272A; box-shadow: 0 20px 50px rgba(124, 58, 237, 0.3); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .phone-header { height: 30px; background: #000; display: flex; justify-content: center; align-items: center; }
+    .notch { width: 100px; height: 12px; background: #27272A; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+    .phone-screen { flex: 1; background: var(--bg-dark); padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; }
+
+    /* Simulator UI Screens */
+    .sim-screen { display: none; height: 100%; flex-direction: column; justify-content: space-between; }
+    .sim-screen.active { display: flex; }
+    .sim-card { background: var(--card-bg); padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid #27272A; }
+    .sim-badge { background: var(--primary); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; display: inline-block; }
+    .sim-btn { background: var(--primary); color: white; border: none; padding: 0.8rem; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 0.5rem; width: 100%; }
+
+    /* Bottom Navigation Simulator */
+    .sim-nav { height: 50px; background: var(--card-bg); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #27272A; }
+    .sim-nav-item { color: var(--text-muted); cursor: pointer; font-size: 0.8rem; }
+    .sim-nav-item.active { color: var(--primary-neon); font-weight: bold; }
+
+    /* Form Section */
+    .form-section { padding: 4rem 5%; background: var(--bg-dark); text-align: center; }
+    .form-section h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .form-wrapper { width: 100%; max-width: 680px; margin: 2rem auto 0 auto; background: var(--card-bg); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 24px; padding: 20px; box-shadow: 0 0 40px rgba(168, 85, 247, 0.2); }
+    iframe { width: 100%; border: none; min-height: 700px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-logo-container">
+      <!-- SVG Isotipo de Amplify (A estilizada azul-violeta con nota musical) -->
+      <svg class="brand-isotype" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L85 85 L65 85 L50 50 L35 85 L15 85 Z" fill="url(#grad1)"/>
+        <circle cx="50" cy="35" r="8" fill="#A855F7"/>
+        <path d="M60 25 C 75 15, 85 30, 80 45" stroke="#E91E63" stroke-width="6" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED" />
+            <stop offset="100%" stop-color="#06B6D4" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <a href="#registro" class="btn-primary">Unirse a la Red</a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>La Plataforma para <span>Músicos Independientes</span> en Quito</h1>
+      <p>Conecta con otros artistas, encuentra colaboraciones, promueve tus tocadas y lleva tu proyecto musical al siguiente nivel sin intermediarios.</p>
+      <a href="#registro" class="btn-primary">Registrar mi Proyecto</a>
+    </div>
+
+    <!-- SIMULADOR INTERACTIVO DE LA APP -->
+    <div class="phone-container">
+      <div class="phone-mockup">
+        <div class="phone-header"><div class="notch"></div></div>
+        
+        <div class="phone-screen">
+          <!-- Pantalla 1: Bienvenida -->
+          <div id="screen-welcome" class="sim-screen active">
+            <div style="text-align: center; margin-top: 3rem;">
+              <svg style="width: 60px; height: 60px;" viewBox="0 0 100 100" fill="none">
+                <path d="M50 10 L85 85 L65 85 L50 50 L35 85 L15 85 Z" fill="url(#grad2)"/>
+                <circle cx="50" cy="35" r="8" fill="#A855F7"/>
+                <path d="M60 25 C 75 15, 85 30, 80 45" stroke="#E91E63" stroke-width="6" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7C3AED" />
+                    <stop offset="100%" stop-color="#06B6D4" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <h2 style="color: var(--primary-neon); font-size: 1.8rem; margin-top: 0.5rem;">AMPLIFY</h2>
+              <p style="font-size: 0.85rem; color: var(--text-muted);">La red de músicos independientes</p>
+            </div>
+            <div style="margin-bottom: 2rem;">
+              <button class="sim-btn" onclick="switchScreen('dashboard')">Explorar como Invitado</button>
+              <p style="font-size: 0.75rem; text-align: center; margin-top: 0.8rem; color: var(--text-muted);">Demo Interactiva</p>
+            </div>
+          </div>
+
+          <!-- Pantalla 2: Dashboard/Feed -->
+          <div id="screen-dashboard" class="sim-screen">
+            <div>
+              <h3 style="margin-bottom: 0.8rem; font-size: 1rem;">Músicos en Quito 🎸</h3>
+              <div class="sim-card">
+                <span class="sim-badge">Rock / Alternativo</span>
+                <h4 style="margin-top: 0.4rem;">Mateo Silva</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Baterista • La Carolina, Quito</p>
+                <button class="sim-btn" style="font-size:0.75rem; padding: 0.4rem; margin-top:0.6rem;" onclick="switchScreen('profile')">Ver Perfil</button>
+              </div>
+              <div class="sim-card">
+                <span class="sim-badge">Indie Pop</span>
+                <h4 style="margin-top: 0.4rem;">Banda "Ecos del Valle"</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Buscando Bajista • Cumbayá</p>
+                <button class="sim-btn" style="font-size:0.75rem; padding: 0.4rem; margin-top:0.6rem;" onclick="switchScreen('colaboracion')">Ver Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pantalla 3: Perfil -->
+          <div id="screen-profile" class="sim-screen">
+            <div>
+              <button style="background:none; border:none; color:var(--primary-neon); cursor:pointer; font-size:0.8rem;" onclick="switchScreen('dashboard')">← Volver</button>
+              <div style="text-align:center; margin: 0.8rem 0;">
+                <div style="width:50px; height:50px; border-radius:50%; background:var(--primary); margin:0 auto 0.5rem auto; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">🥁</div>
+                <h3>Mateo Silva</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Baterista de Sesión</p>
+              </div>
+              <div class="sim-card">
+                <p style="font-size: 0.8rem;"><strong>Experiencia:</strong> 5 años en la escena local.</p>
+                <p style="font-size: 0.8rem; margin-top:0.4rem;"><strong>Influencias:</strong> Soda Stereo, Da Pawn.</p>
+              </div>
+            </div>
+            <button class="sim-btn" onclick="switchScreen('chat')">Enviar Mensaje</button>
+          </div>
+
+          <!-- Pantalla 4: Chat -->
+          <div id="screen-chat" class="sim-screen">
+            <div>
+              <button style="background:none; border:none; color:var(--primary-neon); cursor:pointer; font-size:0.8rem;" onclick="switchScreen('profile')">← Volver</button>
+              <h4 style="margin: 0.5rem 0;">Chat con Mateo</h4>
+              <div class="sim-card" style="background: #27272A; text-align: right; margin-top:0.5rem;">
+                <p style="font-size: 0.8rem;">¡Hola Mateo! Vi tu perfil en Amplify. ¿Disponible para ensayar?</p>
+              </div>
+              <div class="sim-card" style="margin-top:0.5rem;">
+                <p style="font-size: 0.8rem;">¡Qué más! Sí, estoy libre los fines de semana.</p>
+              </div>
+            </div>
+            <div style="font-size:0.7rem; text-align:center; color:var(--text-muted); margin-bottom: 0.5rem;">Simulación de mensajes en tiempo real</div>
+          </div>
+
+          <!-- Pantalla 5: Colaboración -->
+          <div id="screen-colaboracion" class="sim-screen">
+            <div>
+              <button style="background:none; border:none; color:var(--primary-neon); cursor:pointer; font-size:0.8rem;" onclick="switchScreen('dashboard')">← Volver</button>
+              <h3 style="margin-top:0.5rem;">Búsqueda de Bajista</h3>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Ecos del Valle</p>
+              <div class="sim-card" style="margin-top:1rem;">
+                <p style="font-size:0.8rem;">Buscamos bajista para tocar en vivo en la zona de La Mariscal. Contamos con repertorio propio listo para grabar.</p>
+              </div>
+            </div>
+            <a href="#registro" class="sim-btn" style="text-decoration:none; display:block; text-align:center;">Aplicar a la Convocatoria</a>
+          </div>
+
+        </div>
+
+        <!-- Navegación Inferior -->
+        <div class="sim-nav">
+          <div class="sim-nav-item active" onclick="switchScreen('dashboard')">Inicio</div>
+          <div class="sim-nav-item" onclick="switchScreen('profile')">Perfil</div>
+          <div class="sim-nav-item" onclick="switchScreen('chat')">Chat</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULARIO DE CAPTACIÓN -->
+  <section id="registro" class="form-section">
+    <h2>Sé parte del Lanzamiento Oficial en Quito</h2>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Completa tus datos para recibir acceso prioritario a la app en Android.</p>
+    
+    <div class="form-wrapper">
+      <iframe 
+        data-tally-src="https://tally.so/r/PdA58P" 
+        loading="lazy" 
+        width="100%" 
+        height="700" 
+        frameborder="0" 
+        marginheight="0" 
+        marginwidth="0" 
+        title="Registro Amplify">
+      </iframe>
+      <script async src="https://tally.so/widgets/embed.js"></script>
+    </div>
+  </section>
+
+  <script>
+    function switchScreen(screenId) {
+      document.querySelectorAll('.sim-screen').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
