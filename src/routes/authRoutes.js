@@ -6,6 +6,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 // Rutas públicas
 router.post('/register', authController.register);
 router.post('/signin', authController.signin);
+router.post('/login', authController.signin); // Alias para compatibilidad con la app móvil
 router.post('/forgot-password', authController.forgotPassword);
 router.get('/verify-reset-token', authController.verifyResetToken);
 router.post('/reset-password', authController.resetPassword);
