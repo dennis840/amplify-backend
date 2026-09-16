@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000;
    MIDDLEWARES (CORS CONFIG)
 ========================= */
 
-// Configuración explícita de CORS para permitir conexiones desde la app móvil
+// Configuración explícita de CORS para permitir conexiones desde la app móvil y navegador
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -29,7 +29,11 @@ app.use(cors({
   credentials: true
 }));
 
+// Responder solicitudes Preflight (OPTIONS)
+app.options('*', cors());
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /* =========================
    RUTAS REST
@@ -165,6 +169,19 @@ io.on('connection', (socket) => {
     console.log(`🔴 Usuario desconectado: ${socket.userId}`);
     delete connectedUsers[socket.userId];
   });
+});
+
+/* =========================
+   MANEJO GLOBAL DE ERRORES Y 404
+========================= */
+
+app.use((req, res) => {
+  res.status(404).json({ message: `Ruta no encontrada: ${req.method} ${req.url}` });
+});
+
+app.use((err, req, res, next) => {
+  console.error("❌ Error no controlado:", err);
+  res.status(500).json({ message: "Error interno del servidor", error: err.message });
 });
 
 /* =========================
