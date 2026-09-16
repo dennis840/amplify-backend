@@ -178,13 +178,23 @@ exports.updateFullProfile = async (req, res) => {
     }
 
     const parseJSON = (value) => {
-      if (!value) return null;
-      try {
-        return JSON.parse(value);
-      } catch {
-        return null;
-      }
-    };
+  if (!value) return null;
+  
+  // Si ya es un objeto o array, convertirlo directamente a string JSON para la DB
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  
+  try {
+    // Si es un JSON string válido (ej: '["guitarra"]'), lo parsea y re-formatea
+    const parsed = JSON.parse(value);
+    return JSON.stringify(parsed);
+  } catch {
+    // Si es texto plano (ej: "guitarra, voz" o texto libre), lo envuelve en un array
+    const arrayFromText = value.split(",").map(item => item.trim()).filter(Boolean);
+    return JSON.stringify(arrayFromText);
+  }
+};
 
     const result = await db.query(
       `UPDATE musician_profiles SET
